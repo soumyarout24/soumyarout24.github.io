@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMC in Banking Services — Soumya Ranjan Rout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+/* ══════════════════════════════════════════
+   DYNAMIC VIEWER — inline additions only
+   No existing class names renamed or removed
+   ══════════════════════════════════════════ */
+
+/* ── Upload / Link Input Panel ── */
+#viewer-input-panel {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+#viewer-input-panel .vip-title {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent, #5ee7bf);
+  margin-bottom: 2px;
+}
+#viewer-input-panel .vip-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#viewer-url-input {
+  flex: 1;
+  min-width: 200px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.78rem;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#viewer-url-input::placeholder { color: rgba(255,255,255,0.28); }
+#viewer-url-input:focus { border-color: var(--accent, #5ee7bf); }
+
+#viewer-file-input { display: none; }
+.vip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.75);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.vip-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.25); }
+.vip-btn.primary {
+  background: rgba(94,231,191,0.12);
+  border-color: rgba(94,231,191,0.3);
+  color: var(--accent, #5ee7bf);
+}
+.vip-btn.primary:hover { background: rgba(94,231,191,0.22); }
+
+.vip-divider {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.28);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0 4px;
+}
+#vip-filename {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  color: var(--accent, #5ee7bf);
+  display: none;
+}
+
+/* ── Viewer Chrome ── */
+#viewer-chrome {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* window bar — reuses .proj-img-bar layout */
+#viewer-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px 12px 0 0;
+  flex-wrap: wrap;
+}
+.viewer-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+.viewer-dot.red    { background: #ff5f57; }
+.viewer-dot.yellow { background: #febc2e; }
+.viewer-dot.green  { background: #28c840; }
+
+#viewer-bar-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.06em;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* page counter */
+#viewer-page-info {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.45);
+  white-space: nowrap;
+}
+
+/* ── Canvas stage ── */
+#viewer-stage {
+  position: relative;
+  background: #08080f;
+  min-height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#pdf-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0;
+  transition: opacity 0.25s ease;
+}
+#viewer-stage.loading #pdf-canvas { opacity: 0.25; }
+
+/* spinner */
+#viewer-spinner {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+}
+#viewer-stage.loading #viewer-spinner { display: flex; }
+.spinner-ring {
+  width: 36px; height: 36px;
+  border: 2.5px solid rgba(255,255,255,0.1);
+  border-top-color: var(--accent, #5ee7bf);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner-text {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.06em;
+}
+
+/* prev / next arrows */
+.viewer-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 10;
+  transition: background 0.2s, opacity 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+.viewer-arrow:hover { background: rgba(255,255,255,0.14); }
+.viewer-arrow:disabled { opacity: 0.25; pointer-events: none; }
+#viewer-prev { left: 14px; }
+#viewer-next { right: 14px; }
+
+/* dot nav */
+#viewer-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+  max-width: calc(100% - 120px);
+  overflow: hidden;
+}
+.viewer-dot-nav {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+.viewer-dot-nav.active {
+  background: var(--accent, #5ee7bf);
+  transform: scale(1.35);
+}
+
+/* ── Bottom toolbar ── */
+#viewer-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-radius: 0 0 12px 12px;
+  flex-wrap: wrap;
+}
+.vt-group { display: flex; align-items: center; gap: 8px; }
+.vt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.55);
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.vt-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.vt-btn svg { flex-shrink: 0; }
+#zoom-level {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.35);
+  min-width: 38px;
+  text-align: center;
+}
+
+/* ── Error state ── */
+#viewer-error {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 24px;
+  text-align: center;
+}
+#viewer-error .err-icon { font-size: 2rem; }
+#viewer-error .err-title {
+  font-family: var(--font-head, 'Syne'), sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+#viewer-error .err-body {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+  max-width: 380px;
+}
+
+/* ── Placeholder (before any file loaded) ── */
+#viewer-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 24px;
+  text-align: center;
+}
+#viewer-placeholder .ph-icon { font-size: 2.6rem; opacity: 0.35; }
+#viewer-placeholder .ph-title {
+  font-family: var(--font-head, 'Syne'), sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+}
+#viewer-placeholder .ph-sub {
+  font-size: 0.76rem;
+  color: rgba(255,255,255,0.22);
+  line-height: 1.6;
+  max-width: 340px;
+}
+
+/* ── Entire viewer box ── */
+#viewer-wrap {
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #08080f;
+}
+
+/* responsive */
+@media (max-width: 600px) {
+  #viewer-input-panel { padding: 20px 18px; }
+  .vip-row { flex-direction: column; align-items: stretch; }
+  .vip-btn, #viewer-url-input { width: 100%; }
+  .viewer-arrow { width: 34px; height: 34px; font-size: 1rem; }
+  #viewer-prev { left: 8px; }
+  #viewer-next { right: 8px; }
+  #viewer-toolbar { gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- ══════════════════════════════════════════
+     NAV
+     ══════════════════════════════════════════ -->
+<nav id="main-nav">
+  <a href="index.html#hero" class="nav-logo">SRR<span>.</span></a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#skills">Skills</a></li>
+    <li><a href="index.html#experience">Experience</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#education">Education</a></li>
+    <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─── BACK BUTTON ─── -->
+<div class="back-bar">
+  <div class="container">
+    <a href="index.html#projects" class="back-btn reveal">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Projects
+    </a>
+  </div>
+</div>
+
+<!-- ─── PROJECT HERO ─── -->
+<section class="proj-hero">
+  <div class="proj-hero-glow"></div>
+  <div class="proj-hero-glow2"></div>
+  <div class="container">
+    <div class="proj-category reveal">
+      <span class="dot"></span>
+      Marketing · Banking · Research
+    </div>
+    <h1 class="proj-title reveal">IMC in Banking<br><span class="em">Services Study</span></h1>
+    <p class="proj-tagline reveal">
+      A comparative field study analyzing the Integrated Marketing Communication strategies of SBI, HDFC, and ICICI banks in Rourkela — exploring how banks use multi-channel promotion to build trust, drive digital adoption, and connect with a Tier-2 Indian market.
+    </p>
+    <div class="proj-meta-row reveal">
+      <span class="proj-meta-chip">🏦 Banking IMC</span>
+      <span class="proj-meta-chip">📋 Field Research</span>
+      <span class="proj-meta-chip">📊 Comparative Study</span>
+      <span class="proj-meta-chip">🏙️ Rourkela Market</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DYNAMIC SLIDE / PDF VIEWER ─── -->
+<section class="img-section">
+  <div class="container">
+    <div class="proj-img-wrap reveal">
+
+      <!-- ── Input Panel (URL or file upload) ── -->
+      <div id="viewer-input-panel">
+        <div class="vip-title">Load Presentation or Report</div>
+        <div class="vip-row">
+          <input
+            type="text"
+            id="viewer-url-input"
+            placeholder="Paste a PDF or PPTX URL (Google Drive, direct link…)"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="vip-btn primary" id="vip-load-url-btn">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Load
+          </button>
+          <span class="vip-divider">or</span>
+          <button class="vip-btn" id="vip-file-btn">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="12" width="12" height="2" rx="1" fill="currentColor" opacity=".3"/></svg>
+            Upload PDF / PPTX
+          </button>
+          <input type="file" id="viewer-file-input" accept=".pdf,.pptx,.ppt">
+          <span id="vip-filename"></span>
+        </div>
+        <div style="font-family:var(--font-mono,monospace);font-size:0.62rem;color:rgba(255,255,255,0.22);letter-spacing:0.04em;">
+          Supported: PDF · PPTX &nbsp;|&nbsp; Direct public URLs or local file upload
+        </div>
+      </div>
+
+      <!-- ── Viewer Chrome (shown after load) ── -->
+      <div id="viewer-wrap">
+
+        <!-- top bar -->
+        <div id="viewer-bar" style="display:none;">
+          <div class="viewer-dot red"></div>
+          <div class="viewer-dot yellow"></div>
+          <div class="viewer-dot green"></div>
+          <span id="viewer-bar-label">IMC in Banking Services · Rourkela Study</span>
+          <span id="viewer-page-info">Page 1 / 1</span>
+        </div>
+
+        <!-- main stage -->
+        <div id="viewer-stage">
+
+          <!-- placeholder -->
+          <div id="viewer-placeholder">
+            <div class="ph-icon">📄</div>
+            <div class="ph-title">No file loaded yet</div>
+            <div class="ph-sub">Paste a PDF URL above or upload a local PDF / PPTX file to view the presentation here.</div>
+          </div>
+
+          <!-- canvas for PDF pages -->
+          <canvas id="pdf-canvas" style="display:none;"></canvas>
+
+          <!-- PPTX iframe renderer -->
+          <iframe
+            id="pptx-frame"
+            style="display:none;width:100%;min-height:440px;border:none;background:#fff;"
+            allowfullscreen
+            sandbox="allow-scripts allow-same-origin allow-popups"
+          ></iframe>
+
+          <!-- spinner -->
+          <div id="viewer-spinner">
+            <div class="spinner-ring"></div>
+            <span class="spinner-text">Loading…</span>
+          </div>
+
+          <!-- error -->
+          <div id="viewer-error">
+            <div class="err-icon">⚠️</div>
+            <div class="err-title">Could not load file</div>
+            <div class="err-body" id="viewer-error-msg">
+              Make sure the URL is a direct public link to a PDF. For PPTX, upload the file directly.
+            </div>
+            <button class="vip-btn" id="viewer-error-retry" style="margin-top:8px;">Try again</button>
+          </div>
+
+          <!-- prev / next -->
+          <button id="viewer-prev" class="viewer-arrow" disabled aria-label="Previous page">&#8249;</button>
+          <button id="viewer-next" class="viewer-arrow" disabled aria-label="Next page">&#8250;</button>
+
+          <!-- dot indicators -->
+          <div id="viewer-dots"></div>
+
+        </div><!-- /#viewer-stage -->
+
+        <!-- bottom toolbar -->
+        <div id="viewer-toolbar" style="display:none;">
+          <div class="vt-group">
+            <button class="vt-btn" id="vt-zoom-out" title="Zoom out">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/></svg>
+              Zoom Out
+            </button>
+            <span id="zoom-level">100%</span>
+            <button class="vt-btn" id="vt-zoom-in" title="Zoom in">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/></svg>
+              Zoom In
+            </button>
+          </div>
+          <div class="vt-group">
+            <button class="vt-btn" id="vt-fullscreen" title="Fullscreen">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              Fullscreen
+            </button>
+            <button class="vt-btn" id="vt-reset" title="Reset / change file">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8a5 5 0 1 0 1-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 5l2 2 2-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Reset
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /#viewer-wrap -->
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── OVERVIEW ─── -->
+<section class="overview-section">
+  <div class="container">
+    <div class="overview-grid">
+      <div class="overview-body">
+        <div class="section-label reveal">Overview</div>
+        <h2 class="section-title reveal">Project Overview &<br>Problem Statement</h2>
+        <div class="reveal">
+          <p>This project investigates the <strong>Integrated Marketing Communication (IMC)</strong> strategies deployed by India's three major banks — <strong>SBI, HDFC, and ICICI</strong> — within the specific context of <strong>Rourkela, Odisha</strong>, a Tier-2 industrial city. IMC is a strategic approach that coordinates all promotional activities to deliver a unified, customer-focused message across every touchpoint.</p>
+          <p>Despite heavy marketing investment, banks operating in Tier-2 cities often struggle to bridge the gap between digital-first communication and the on-ground realities of language barriers, digital literacy gaps, and a population that still values face-to-face interaction over chatbots and apps.</p>
+          <p>The objective was to conduct a <strong>mixed-method field study</strong> across key Rourkela locations — Sector 19 Market, Main Road, and NIT Campus — comparing how each bank deploys its IMC toolkit, what resonates with local demographics, and what improvements could make their communications more effective in this market.</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="info-card">
+          <div class="info-card-header">Project Details</div>
+          <div class="info-card-body">
+            <div class="info-row">
+              <span class="info-key">Category</span>
+              <span class="info-val"><span class="tag">Research Report</span></span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Type</span>
+              <span class="info-val">MBA Project Report</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Author</span>
+              <span class="info-val">Soumya Ranjan Rout</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Roll No.</span>
+              <span class="info-val">25MBA060</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Domain</span>
+              <span class="info-val"><span class="tag amber">Banking &amp; Marketing</span></span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Study Area</span>
+              <span class="info-val">Rourkela, Odisha</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Sample Size</span>
+              <span class="info-val">50 Respondents</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── KPIs ─── -->
+<section class="kpi-section">
+  <div class="container">
+    <div class="section-label reveal">Metrics</div>
+    <h2 class="section-title reveal">Study at a Glance</h2>
+    <div class="kpi-big-grid">
+      <div class="kpi-big-card reveal"><div class="kpi-big-icon">🏦</div><div class="kpi-big-value">3</div><div class="kpi-big-label">Banks Studied</div></div>
+      <div class="kpi-big-card reveal"><div class="kpi-big-icon">👥</div><div class="kpi-big-value">50</div><div class="kpi-big-label">Respondents Surveyed</div></div>
+      <div class="kpi-big-card reveal"><div class="kpi-big-icon">📍</div><div class="kpi-big-value">3</div><div class="kpi-big-label">Field Locations</div></div>
+      <div class="kpi-big-card reveal"><div class="kpi-big-icon">📡</div><div class="kpi-big-value">5+</div><div class="kpi-big-label">IMC Channels Analyzed</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── BANK PROFILES ─── -->
+<section class="insights-section">
+  <div class="container">
+    <div class="section-label reveal">Bank Profiles</div>
+    <h2 class="section-title reveal">IMC Strategies by Bank</h2>
+    <div class="insights-grid">
+
+      <!-- SBI -->
+      <div class="insight-card reveal">
+        <div class="insight-num">SBI</div>
+        <div class="insight-title">State Bank of India — "The Banker to Every Indian"</div>
+        <div class="insight-desc">India's largest public sector bank. In Rourkela, SBI holds the highest trust factor among the older demographic due to its unmatched physical presence and government backing. It relies heavily on <strong>mass media</strong> (TV commercials, newspapers) and organizes local <strong>'Loan Melas'</strong> and festival engagements for direct community outreach. Its <strong>YONO app</strong> is gaining traction among NIT students and young professionals as a bridge to retain younger customers.</div>
+      </div>
+
+      <!-- HDFC -->
+      <div class="insight-card reveal">
+        <div class="insight-num">HDFC</div>
+        <div class="insight-title">HDFC Bank — "We Understand Your World"</div>
+        <div class="insight-desc">A leader in the private sector known for operational efficiency and aggressive sales. HDFC uses <strong>data analytics</strong> to send personalized pre-approved loan offers via SMS and Email. It collaborates with influencers to reach millennials (the <strong>GoDigitalGoSecure</strong> campaign was highly effective) and maintains high visibility in Rourkela malls and electronics stores through cashback offers and EMI branding.</div>
+      </div>
+
+      <!-- ICICI -->
+      <div class="insight-card reveal">
+        <div class="insight-num">ICICI</div>
+        <div class="insight-title">ICICI Bank — "Khayal Aapka" (We Care for You)</div>
+        <div class="insight-desc">Known for innovation and introducing many digital banking firsts in India. ICICI's IMC leans on <strong>emotional storytelling</strong> — ads focused on family values and ease of life create a soft emotional bond. The bank heavily promotes its <strong>iMobile app</strong> and targets Rourkela's tech-savvy population aggressively, positioning itself as the friendliest digital bank for the new generation.</div>
+      </div>
+
+      <!-- Finding 1 -->
+      <div class="insight-card reveal">
+        <div class="insight-num">01</div>
+        <div class="insight-title">Finding: Brand Awareness in Rourkela</div>
+        <div class="insight-desc">SBI remains the most recognized brand in Rourkela, largely due to its decades-long historical presence and government associations. However, among the 18–25 age group, ICICI and HDFC are rapidly catching up through app-first experiences and attractive cashback promotions.</div>
+      </div>
+
+      <!-- Finding 2 -->
+      <div class="insight-card reveal">
+        <div class="insight-num">02</div>
+        <div class="insight-title">Finding: Digital Preference by Age Group</div>
+        <div class="insight-desc">Students (18–25) prefer ICICI/HDFC for app UI and cashback. Working professionals (26–45) favour HDFC/SBI for salary accounts and home loan rates. Senior citizens (45+) trust SBI, often requiring staff assistance even for YONO adoption — underlining how digital IMC must be age-segmented.</div>
+      </div>
+
+      <!-- Finding 3 -->
+      <div class="insight-card reveal">
+        <div class="insight-num">03</div>
+        <div class="insight-title">Finding: Impact of Physical Promotions</div>
+        <div class="insight-desc">Field observation revealed that physical hoardings across Rourkela often mix Odia and Hindi with English to connect locally. HDFC and ICICI focus on product benefits (rates, Apple offers), while SBI emphasizes brand identity and government schemes — reflecting each bank's core IMC philosophy on the ground.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── TOOLS / METHODOLOGY ─── -->
+<section class="tools-section">
+  <div class="container">
+    <div class="section-label reveal">Methodology</div>
+    <h2 class="section-title reveal">Research Approach</h2>
+    <div class="tools-grid reveal">
+      <div class="tool-chip">📋 Primary Data Collection</div>
+      <div class="tool-chip">📚 Secondary Research</div>
+      <div class="tool-chip">🗺️ Field Observation</div>
+      <div class="tool-chip">👥 50-Respondent Survey</div>
+      <div class="tool-chip">📍 Sector 19 Market</div>
+      <div class="tool-chip">🛣️ Main Road Rourkela</div>
+      <div class="tool-chip">🎓 NIT Campus</div>
+      <div class="tool-chip">📄 Pamphlet &amp; Hoarding Analysis</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES / IMC CHANNELS ─── -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-label reveal">Channels</div>
+    <h2 class="section-title reveal">IMC Channels in Focus</h2>
+    <div class="features-grid">
+      <div class="feature-item reveal">
+        <div class="feature-icon">📺</div>
+        <div>
+          <div class="feature-title">Mass Media (TV &amp; Print)</div>
+          <div class="feature-desc">SBI's dominant channel. TV commercials and newspaper ads reach the broadest audience in Rourkela, especially the 45+ demographic who rely on traditional media for financial decisions and trust-building.</div>
+        </div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">📱</div>
+        <div>
+          <div class="feature-title">Digital &amp; App-Based Promotion</div>
+          <div class="feature-desc">HDFC and ICICI lead in digital IMC — using SMS, email personalization, influencer campaigns, and in-app promotions to drive conversions among millennials and Gen-Z in Rourkela's student and working population.</div>
+        </div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">🏪</div>
+        <div>
+          <div class="feature-title">Merchant &amp; Retail Tie-ups</div>
+          <div class="feature-desc">HDFC's high-visibility strategy in malls and electronics stores through cashback offers, EMI branding, and co-branded point-of-sale materials creates direct purchase-moment impact across Rourkela's retail corridors.</div>
+        </div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">🎪</div>
+        <div>
+          <div class="feature-title">Local Events &amp; Community Engagement</div>
+          <div class="feature-desc">SBI's 'Loan Melas' and festival participation build direct community trust in Rourkela, creating face-to-face touchpoints that digital-only campaigns cannot replicate — particularly effective with older demographics and small traders.</div>
+        </div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">🎭</div>
+        <div>
+          <div class="feature-title">Emotional Storytelling (ICICI)</div>
+          <div class="feature-desc">ICICI's "Khayal Aapka" campaigns use family-centric emotional narratives to build brand affinity beyond product features. This approach creates a softer trust bond — highly effective in the aspirational middle-class segment of Rourkela.</div>
+        </div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">📊</div>
+        <div>
+          <div class="feature-title">Data-Driven Personalization (HDFC)</div>
+          <div class="feature-desc">HDFC's use of data analytics to send pre-approved loan and offer notifications via SMS and email is among the most targeted IMC approaches in the Rourkela market — converting intent into action at the individual customer level.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CHALLENGES ─── -->
+<section class="dataset-section">
+  <div class="container">
+    <div class="dataset-grid">
+      <div>
+        <div class="section-label reveal">Challenges</div>
+        <h2 class="section-title reveal">IMC Challenges in<br>Tier-2 Cities</h2>
+        <div class="dataset-body reveal">
+          <p>Rourkela's demographic complexity — industrial workers, NIT students, traders, and retirees — creates unique friction points for bank marketing teams trying to deploy a single coherent IMC strategy:</p>
+          <ul class="dataset-list">
+            <li><strong>Language Barrier:</strong> English-heavy digital ads often miss the older local population. Greater use of Odia-language content is needed for deeper reach.</li>
+            <li><strong>Digital Literacy Gap:</strong> While smartphone usage is high, fear of online fraud significantly hinders full adoption of digital banking promotions.</li>
+            <li><strong>Touch vs. Tech:</strong> Customers still value face-to-face interaction over chatbots, making purely digital IMC strategies less effective without a physical service layer.</li>
+            <li><strong>Generational Divide:</strong> A single campaign cannot simultaneously satisfy a retired RSP employee's need for trust and an NIT student's demand for cashback convenience.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="file-card">
+          <div class="file-card-header">💡 Recommendations</div>
+          <div class="file-item" style="flex-direction:column;align-items:flex-start;gap:10px;">
+            <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.03em;text-transform:uppercase;margin-bottom:4px;">For Private Banks (HDFC / ICICI)</div>
+            <ul class="dataset-list" style="margin:0;">
+              <li>Increase physical visibility in local markets, not just malls.</li>
+              <li>Conduct digital literacy workshops to build trust.</li>
+              <li>Improve in-branch service to match marketing promises.</li>
+            </ul>
+            <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.03em;text-transform:uppercase;margin-top:10px;margin-bottom:4px;">For Public Sector (SBI)</div>
+            <ul class="dataset-list" style="margin:0;">
+              <li>Make digital ads more vibrant and youth-oriented.</li>
+              <li>Accelerate YONO adoption through guided in-branch support.</li>
+              <li>Invest in Odia-language content for wider demographic coverage.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONCLUSION ─── -->
+<section class="conclusion-section">
+  <div class="container">
+    <div class="section-label reveal">Conclusion</div>
+    <h2 class="section-title reveal">Key Takeaway</h2>
+    <div class="conclusion-inner reveal">
+      <p>Integrated Marketing Communication in banking is not just about advertisements — it is fundamentally about building <strong>Trust</strong>. In Rourkela, <strong>SBI leads in trust</strong> through its unparalleled traditional reach and community presence, while <strong>HDFC and ICICI are winning the youth</strong> through innovative digital IMC and data-driven personalization. The ideal future strategy for banking in Tier-2 India combines the <strong>mass reach of SBI with the efficiency and personalization capabilities of private banks</strong> — powered by AI, Odia-language content, and a genuine understanding of the Steel City's diverse demographic fabric. The future of IMC in Rourkela lies in <strong>hyper-personalization</strong>, where AI and data analytics allow banks to deliver offers relevant to each customer's specific life stage, bridging the gap between digital efficiency and personal care.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT CTA ─── -->
+<section class="contact-cta">
+  <div class="container">
+    <div class="contact-cta-inner">
+      <div class="contact-cta-text reveal">
+        <h3>Interested in<br>collaborating <span class="em">?</span></h3>
+        <p>Feel free to reach out for feedback, collaboration, or any marketing research opportunities.</p>
+      </div>
+      <div class="reveal" style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="mailto:rout06738@gmail.com" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v10H2V3zm0 0l6 5 6-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+          rout06738@gmail.com
+        </a>
+        <a href="https://github.com/soumyarout24" target="_blank" rel="noopener" class="btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          GitHub Profile
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════ -->
+<footer>
+  <div class="footer-copy">© 2026 Soumya Ranjan Rout — Built for recruiters, by a data guy.</div>
+  <a href="#" class="footer-back">↑ Back to top</a>
+</footer>
+
+<script src="js/script.js"></script>
+
+<!-- ══════════════════════════════════════════
+     DYNAMIC PDF / PPTX VIEWER — PDF.js
+     ══════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── PDF.js CDN ── */
+  const PDFJS_CDN  = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  /* ── DOM refs ── */
+  const urlInput      = document.getElementById('viewer-url-input');
+  const loadUrlBtn    = document.getElementById('vip-load-url-btn');
+  const fileBtn       = document.getElementById('vip-file-btn');
+  const fileInput     = document.getElementById('viewer-file-input');
+  const filenameLbl   = document.getElementById('vip-filename');
+  const inputPanel    = document.getElementById('viewer-input-panel');
+
+  const viewerWrap    = document.getElementById('viewer-wrap');
+  const viewerBar     = document.getElementById('viewer-bar');
+  const barLabel      = document.getElementById('viewer-bar-label');
+  const pageInfo      = document.getElementById('viewer-page-info');
+  const viewerStage   = document.getElementById('viewer-stage');
+  const pdfCanvas     = document.getElementById('pdf-canvas');
+  const pptxFrame     = document.getElementById('pptx-frame');
+  const placeholder   = document.getElementById('viewer-placeholder');
+  const spinnerEl     = document.getElementById('viewer-spinner');
+  const errorEl       = document.getElementById('viewer-error');
+  const errorMsg      = document.getElementById('viewer-error-msg');
+  const errorRetry    = document.getElementById('viewer-error-retry');
+  const prevBtn       = document.getElementById('viewer-prev');
+  const nextBtn       = document.getElementById('viewer-next');
+  const dotsWrap      = document.getElementById('viewer-dots');
+  const toolbar       = document.getElementById('viewer-toolbar');
+
+  const zoomInBtn     = document.getElementById('vt-zoom-in');
+  const zoomOutBtn    = document.getElementById('vt-zoom-out');
+  const zoomLbl       = document.getElementById('zoom-level');
+  const fullscreenBtn = document.getElementById('vt-fullscreen');
+  const resetBtn      = document.getElementById('vt-reset');
+
+  /* ── State ── */
+  let pdfDoc    = null;
+  let totalPages = 0;
+  let current   = 1;
+  let scale     = 1.4;
+  let rendering = false;
+  let mode      = 'pdf'; // 'pdf' | 'pptx'
+  let pdfJsLoaded = false;
+
+  const MAX_DOTS = 20; // show dots only for ≤20 pages
+
+  /* ─────────────────────────────────────────
+     Utility
+  ───────────────────────────────────────── */
+  function setLoading(on) {
+    viewerStage.classList.toggle('loading', on);
+    spinnerEl.style.display = on ? 'flex' : 'none';
+  }
+
+  function showError(msg) {
+    setLoading(false);
+    pdfCanvas.style.display    = 'none';
+    pptxFrame.style.display    = 'none';
+    placeholder.style.display  = 'none';
+    errorEl.style.display      = 'flex';
+    errorMsg.textContent       = msg || 'Failed to load file. Please check the URL or try uploading directly.';
+    prevBtn.disabled = nextBtn.disabled = true;
+    viewerBar.style.display    = 'none';
+    toolbar.style.display      = 'none';
+  }
+
+  function showChrome() {
+    viewerBar.style.display = 'flex';
+    toolbar.style.display   = 'flex';
+    placeholder.style.display = 'none';
+    errorEl.style.display     = 'none';
+  }
+
+  function updateNav() {
+    prevBtn.disabled = current <= 1;
+    nextBtn.disabled = current >= totalPages;
+    pageInfo.textContent = `Page ${current} / ${totalPages}`;
+    barLabel.textContent = `Slide ${current} / ${totalPages} — IMC in Banking Services · Rourkela Study`;
+    /* dot highlights */
+    dotsWrap.querySelectorAll('.viewer-dot-nav').forEach((d, i) => {
+      d.classList.toggle('active', i + 1 === current);
+    });
+  }
+
+  function buildDots(total) {
+    dotsWrap.innerHTML = '';
+    if (total <= 1 || total > MAX_DOTS) return;
+    for (let i = 1; i <= total; i++) {
+      const d = document.createElement('button');
+      d.className = 'viewer-dot-nav' + (i === 1 ? ' active' : '');
+      d.setAttribute('aria-label', 'Page ' + i);
+      d.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(d);
+    }
+  }
+
+  /* ─────────────────────────────────────────
+     PDF.js loader
+  ───────────────────────────────────────── */
+  function loadPdfJs(cb) {
+    if (pdfJsLoaded) { cb(); return; }
+    const s = document.createElement('script');
+    s.src = PDFJS_CDN;
+    s.onload = () => {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+      pdfJsLoaded = true;
+      cb();
+    };
+    s.onerror = () => showError('Could not load PDF.js library. Check your internet connection.');
+    document.head.appendChild(s);
+  }
+
+  /* ─────────────────────────────────────────
+     Render a PDF page
+  ───────────────────────────────────────── */
+  function renderPage(pageNum) {
+    if (!pdfDoc || rendering) return;
+    rendering = true;
+    setLoading(true);
+    pdfCanvas.style.display = 'block';
+    pptxFrame.style.display = 'none';
+
+    pdfDoc.getPage(pageNum).then(page => {
+      const vp   = page.getViewport({ scale });
+      const ctx  = pdfCanvas.getContext('2d');
+      pdfCanvas.height = vp.height;
+      pdfCanvas.width  = vp.width;
+
+      const renderCtx = { canvasContext: ctx, viewport: vp };
+      page.render(renderCtx).promise.then(() => {
+        rendering = false;
+        setLoading(false);
+        updateNav();
+      }).catch(err => {
+        rendering = false;
+        showError('Error rendering page: ' + err.message);
+      });
+    }).catch(err => {
+      rendering = false;
+      showError('Error loading page: ' + err.message);
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     Load PDF from URL or ArrayBuffer
+  ───────────────────────────────────────── */
+  function openPdf(source, filename) {
+    mode = 'pdf';
+    setLoading(true);
+    showChrome();
+    pdfCanvas.style.display = 'block';
+    pptxFrame.style.display = 'none';
+    viewerStage.style.minHeight = '440px';
+
+    loadPdfJs(() => {
+      const loadTask = typeof source === 'string'
+        ? window.pdfjsLib.getDocument({ url: source, withCredentials: false })
+        : window.pdfjsLib.getDocument({ data: source });
+
+      loadTask.promise.then(pdf => {
+        pdfDoc     = pdf;
+        totalPages = pdf.numPages;
+        current    = 1;
+        buildDots(totalPages);
+        if (filename) {
+          barLabel.textContent = `Slide 1 / ${totalPages} — ${filename}`;
+          filenameLbl.textContent = filename;
+          filenameLbl.style.display = 'inline';
+        }
+        renderPage(1);
+      }).catch(err => {
+        showError('Could not open PDF. Make sure the URL is a direct public link and CORS is allowed.\n\n' + err.message);
+      });
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     Load PPTX via Google Docs Viewer (iframe)
+  ───────────────────────────────────────── */
+  function openPptxUrl(url, filename) {
+    mode       = 'pptx';
+    totalPages = 1; // PPTX in iframe — no page API
+    current    = 1;
+    showChrome();
+    setLoading(true);
+    pdfCanvas.style.display = 'none';
+    dotsWrap.innerHTML = '';
+
+    /* Google Docs Viewer embeds PPTX/PDF */
+    const embedUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(url) + '&embedded=true';
+    pptxFrame.src = embedUrl;
+    pptxFrame.style.display = 'block';
+    pptxFrame.style.minHeight = '520px';
+    viewerStage.style.minHeight = '520px';
+
+    pptxFrame.onload = () => setLoading(false);
+    pptxFrame.onerror = () => showError('Could not load PPTX. Try uploading the file directly.');
+
+    prevBtn.disabled = nextBtn.disabled = true;
+    pageInfo.textContent = filename || 'Presentation';
+    barLabel.textContent = (filename || 'Presentation') + ' — via Google Docs Viewer';
+    if (filename) {
+      filenameLbl.textContent = filename;
+      filenameLbl.style.display = 'inline';
+    }
+  }
+
+  /* PPTX from local file — convert to blob URL */
+  function openPptxFile(file) {
+    const blobUrl = URL.createObjectURL(file);
+    openPptxUrl(blobUrl, file.name);
+  }
+
+  /* ─────────────────────────────────────────
+     Navigation
+  ───────────────────────────────────────── */
+  function goTo(n) {
+    if (mode !== 'pdf') return;
+    n = Math.max(1, Math.min(totalPages, n));
+    if (n === current) return;
+    current = n;
+    renderPage(current);
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', e => {
+    const tag = document.activeElement.tagName.toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    goTo(current - 1);
+  });
+
+  /* ─────────────────────────────────────────
+     Zoom
+  ───────────────────────────────────────── */
+  function applyZoom(delta) {
+    if (mode !== 'pdf') return;
+    scale = Math.max(0.5, Math.min(3.5, scale + delta));
+    zoomLbl.textContent = Math.round(scale / 1.4 * 100) + '%';
+    renderPage(current);
+  }
+  zoomInBtn.addEventListener('click',  () => applyZoom(+0.2));
+  zoomOutBtn.addEventListener('click', () => applyZoom(-0.2));
+
+  /* ─────────────────────────────────────────
+     Fullscreen
+  ───────────────────────────────────────── */
+  fullscreenBtn.addEventListener('click', () => {
+    const el = viewerWrap;
+    if (!document.fullscreenElement) {
+      el.requestFullscreen && el.requestFullscreen();
+    } else {
+      document.exitFullscreen && document.exitFullscreen();
+    }
+  });
+
+  /* ─────────────────────────────────────────
+     Reset
+  ───────────────────────────────────────── */
+  function resetViewer() {
+    pdfDoc = null;
+    totalPages = 0;
+    current = 1;
+    rendering = false;
+    mode = 'pdf';
+    pdfCanvas.style.display = 'none';
+    pptxFrame.style.display = 'none';
+    pptxFrame.src = '';
+    errorEl.style.display = 'none';
+    placeholder.style.display = 'flex';
+    viewerBar.style.display = 'none';
+    toolbar.style.display = 'none';
+    dotsWrap.innerHTML = '';
+    prevBtn.disabled = nextBtn.disabled = true;
+    urlInput.value = '';
+    filenameLbl.style.display = 'none';
+    filenameLbl.textContent = '';
+    fileInput.value = '';
+    setLoading(false);
+  }
+  resetBtn.addEventListener('click', resetViewer);
+  errorRetry.addEventListener('click', resetViewer);
+
+  /* ─────────────────────────────────────────
+     URL loader
+  ───────────────────────────────────────── */
+  function handleUrlLoad() {
+    let url = urlInput.value.trim();
+    if (!url) return;
+
+    /* Google Drive share link → direct download */
+    const gdMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (gdMatch && url.includes('drive.google.com')) {
+      url = 'https://drive.google.com/uc?export=download&id=' + gdMatch[1];
+    }
+
+    const lower = url.toLowerCase();
+    if (lower.endsWith('.pptx') || lower.endsWith('.ppt') || lower.includes('pptx')) {
+      openPptxUrl(url, url.split('/').pop() || 'Presentation');
+    } else {
+      /* treat as PDF (default) */
+      openPdf(url, url.split('/').pop() || 'Document.pdf');
+    }
+  }
+
+  loadUrlBtn.addEventListener('click', handleUrlLoad);
+  urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleUrlLoad(); });
+
+  /* ─────────────────────────────────────────
+     File upload
+  ───────────────────────────────────────── */
+  fileBtn.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const name  = file.name.toLowerCase();
+    if (name.endsWith('.pptx') || name.endsWith('.ppt')) {
+      openPptxFile(file);
+    } else if (name.endsWith('.pdf')) {
+      const reader = new FileReader();
+      reader.onload = e => openPdf(new Uint8Array(e.target.result), file.name);
+      reader.readAsArrayBuffer(file);
+    } else {
+      showError('Unsupported file type. Please upload a PDF or PPTX file.');
+    }
+  });
+
+  /* ─────────────────────────────────────────
+     Drag & drop onto the viewer stage
+  ───────────────────────────────────────── */
+  viewerStage.addEventListener('dragover', e => { e.preventDefault(); viewerStage.style.outline = '2px dashed var(--accent,#5ee7bf)'; });
+  viewerStage.addEventListener('dragleave', () => { viewerStage.style.outline = ''; });
+  viewerStage.addEventListener('drop', e => {
+    e.preventDefault();
+    viewerStage.style.outline = '';
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    if (name.endsWith('.pdf')) {
+      const reader = new FileReader();
+      reader.onload = ev => openPdf(new Uint8Array(ev.target.result), file.name);
+      reader.readAsArrayBuffer(file);
+    } else if (name.endsWith('.pptx') || name.endsWith('.ppt')) {
+      openPptxFile(file);
+    } else {
+      showError('Unsupported file. Drop a PDF or PPTX file.');
+    }
+  });
+
+  /* update placeholder to hint drag-drop */
+  document.querySelector('#viewer-placeholder .ph-sub').textContent =
+    'Paste a PDF URL above, upload a local PDF / PPTX file, or drag & drop a file here.';
+
+})();
+</script>
+
+</body>
+</html>
