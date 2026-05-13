@@ -38,48 +38,8 @@
   }
 
 
-  /* =========================================
-   HERO GREEN GLOW FIX
-   — Desktop overrides
-========================================= */
-
-.proj-hero {
-    overflow: hidden;
-    position: relative;
-}
-
-.proj-hero-glow {
-    top: -320px !important;
-    right: -180px !important;
-    width: 750px !important;
-    height: 750px !important;
-    z-index: 0;
-}
-
-.proj-hero-glow2 {
-    top: -150px !important;
-    bottom: auto !important;
-}
-
-/* NOTE: Mobile glow fix is at the BOTTOM of this file
-   so it wins the cascade over the base .proj-hero-glow rule */
 
 
-/* =========================================
-   FILE-NAME-WRAP — base style
-   (Used on the inner anonymous div inside
-    .file-item-left so we can target it in CSS.
-    The HTML must have class="file-name-wrap"
-    on that div — see swiggy-data-analysis-excel.html)
-========================================= */
-
-.file-name-wrap {
-    min-width: 0;      /* Critical: allow flex child to shrink */
-    overflow: hidden;
-}
-
-/* NOTE: Mobile file card fix is at the BOTTOM of this file
-   so it wins the cascade over all base .file-* rules */
 
   /* VIDEO CONTAINER */
 .proj-video-box{
@@ -2137,14 +2097,10 @@ border-color: rgba(255,255,255,0.2);
 }
 
 /* ─── BACK BAR ─── */
-/* Back-bar is now inside .proj-hero — the 100px top padding
-   was the nav-height spacer. Keep it here since .proj-hero
-   no longer needs to repeat it; proj-hero's own padding
-   (40px top) stacks on top of this. */
   .back-bar {
 position: relative;
-    z-index: 2;
-    padding: 80px 0 24px;
+    z-index: 1;
+    padding: 100px 0 0;
 }
 
 .back-btn {
@@ -2172,11 +2128,8 @@ color: var(--accent);
 }
 
 /* ─── PROJECT HERO ─── */
-/* Top padding removed — .back-bar inside this section now
-   handles the nav clearance (80px). overflow:hidden keeps
-   the absolute glow divs clipped within this boundary. */
   .proj-hero {
-padding: 0 0 72px;
+padding: 40px 0 72px;
     position: relative;
     z-index: 1;
     overflow: hidden;
@@ -2955,127 +2908,125 @@ flex-direction: column;
 width: 100%; justify-content: center;
 }
 
+/* =========================================
+   HERO GREEN GLOW FIX
+========================================= */
 
-/* =====================================================
-   MOBILE FIXES — PLACED AT END OF FILE SO THEY WIN
-   THE CASCADE OVER ALL BASE RULES ABOVE.
-   Do NOT move these to the top.
-   ===================================================== */
+.proj-hero {
+    overflow: hidden;
+    position: relative;
+}
 
-/* ─── HERO GLOW: Mobile ─── */
-/*
-   WHY THE GLOW SHIFTS DOWN ON MOBILE:
-   The .proj-hero-glow is 750px × 750px with top:-320px.
-   On desktop the tall hero section keeps the glow in the
-   top-right visually. On mobile the hero section shrinks
-   to ~300-400px tall; the 750px orb overflows downward.
-   Because .proj-hero has overflow:hidden, the top half is
-   clipped and the LOWER half of the orb is what you see —
-   appearing to "fall down". Fix: scale the orb to match
-   the smaller viewport on mobile.
-*/
+.proj-hero-glow {
+    top: -320px !important;
+    right: -180px !important;
+    width: 750px !important;
+    height: 750px !important;
+    z-index: 0;
+}
+
+.proj-hero-glow2 {
+    top: -150px !important;
+    bottom: auto !important;
+}
+
+/* On mobile the hero shrinks in height, so the oversized glow
+   (750px tall, top: -320px) ends up half-visible at the BOTTOM
+   of the short section rather than the top. Fix: shrink the orb
+   and use a shallower negative offset so it stays visually at the
+   top-right corner of the hero area regardless of section height. */
 @media (max-width: 768px) {
     .proj-hero-glow {
-        width: 300px !important;
-        height: 300px !important;
-        top: -60px !important;
-        right: -60px !important;
+        width: 320px !important;
+        height: 320px !important;
+        top: -80px !important;
+        right: -80px !important;
     }
+
     .proj-hero-glow2 {
-        width: 180px !important;
-        height: 180px !important;
+        width: 200px !important;
+        height: 200px !important;
         top: auto !important;
-        bottom: -50px !important;
-        left: -50px !important;
+        bottom: -60px !important;
+        left: -60px !important;
     }
 }
 
-/* ─── FILE CARD: Mobile ─── */
-/*
-   WHY THE CARD OVERFLOWS ON MOBILE:
-   1. The media query block that was at the top of the file
-      was being overridden by .file-item at line ~2799 (later
-      in the cascade = wins). Those overrides were doing nothing.
-   2. .file-item-left is a flex row. Its second child is an
-      anonymous <div> (now given class="file-name-wrap" in HTML).
-      Flex children have min-width:auto by default — they REFUSE
-      to shrink below their content size. The filename
-      "swiggy-data-insights-presentation.pptx" in DM Mono is
-      ~320px wide, stretching the card past the viewport.
-   3. Fix: add class="file-name-wrap" to the inner div in HTML
-      (already done), set min-width:0 + overflow:hidden on it,
-      and stack .file-item vertically on mobile.
-*/
+
+/* =========================================
+   MOBILE FILE CARD FIX
+========================================= */
+
+/* WHY THE EARLIER FIX FAILED:
+   The media query block was declared at the TOP of the file, but
+   the base .file-item rule (display:flex; justify-content:space-between)
+   appears much LATER (line ~2799) and overwrites the mobile overrides
+   because CSS applies the last matching rule. The fix is to move all
+   file card responsive rules BELOW the base definitions, or — as done
+   here — to use a specificity/order-safe block placed after all base
+   rules. Add this block at the very END of style.css, after all other
+   rules, so it always wins. */
+
 @media (max-width: 768px) {
 
-    /* Contain the card within its grid column */
+    /* Prevent the card container from growing beyond viewport */
     .file-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
-        box-sizing: border-box !important;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
     }
 
-    /* Header: tighter, allow text to wrap */
     .file-card-header {
-        font-size: 11px !important;
-        padding: 12px 14px !important;
-        line-height: 1.5 !important;
-        word-break: break-word !important;
+        font-size: 11px;
+        line-height: 1.5;
+        padding: 14px 16px;
+        word-break: break-word;
     }
 
-    /* Stack icon+filename above the GitHub button */
+    /* Stack icon+name above the button */
     .file-item {
         display: flex !important;
         flex-direction: column !important;
-        align-items: stretch !important;
+        align-items: flex-start !important;
         justify-content: flex-start !important;
-        gap: 10px !important;
-        padding: 14px !important;
+        gap: 12px !important;
+        padding: 16px !important;
     }
 
-    /* Left group (icon + name wrapper) — full width, can shrink */
+    /* Allow left group to shrink and wrap its text */
     .file-item-left {
-        display: flex !important;
-        align-items: center !important;
-        gap: 10px !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        overflow: hidden !important;
+        width: 100%;
+        min-width: 0;          /* critical: lets flex children shrink below content size */
+        overflow: hidden;
     }
 
-    /* The inner div wrapping .file-name + .file-size
-       MUST have class="file-name-wrap" in the HTML.
-       Without min-width:0 this div will never shrink. */
-    .file-name-wrap {
-        min-width: 0 !important;
-        overflow: hidden !important;
-        flex: 1 !important;
+    /* The inner div holding file-name + file-size also needs min-width:0 */
+    .file-item-left > div {
+        min-width: 0;
+        overflow: hidden;
     }
 
-    /* Break long filenames like .pptx / .xlsx */
     .file-name {
-        font-size: 11.5px !important;
-        line-height: 1.45 !important;
-        white-space: normal !important;
-        word-break: break-all !important;
-        overflow-wrap: anywhere !important;
+        font-size: 12px !important;
+        line-height: 1.5 !important;
+        white-space: normal !important;   /* override the inherited nowrap risk */
+        word-break: break-all !important; /* break long filenames like .pptx names */
+        overflow-wrap: break-word;
     }
 
     .file-size {
         font-size: 10px !important;
-        margin-top: 3px !important;
     }
 
-    /* Button: full width, centered */
+    /* Button goes full-width below the filename */
     .file-download {
         display: flex !important;
         width: 100% !important;
         justify-content: center !important;
-        align-items: center !important;
-        padding: 10px 14px !important;
         font-size: 10px !important;
-        box-sizing: border-box !important;
-        white-space: nowrap !important;
+        padding: 10px 12px !important;
+        box-sizing: border-box;
+        white-space: nowrap; /* keep button label on one line, it's short enough */
     }
 }
