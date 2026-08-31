@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retail Business Performance Dashboard — Soumya Ranjan Rout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* Scoped fix: this page's KPI cards show short text labels (e.g. "Retail Sales")
+     instead of numeric stats, so the default .kpi-big-value size overflows the card. */
+  .kpi-big-value.kpi-big-value--text{
+    font-size: 1.5rem;
+    line-height: 1.2;
+    white-space: normal;
+    word-break: break-word;
+  }
+  .kpi-big-card{
+    overflow: hidden;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- ══════════════════════════════════════════
+     NAV — exact from original index.html
+     ══════════════════════════════════════════ -->
+<nav id="main-nav">
+  <a href="index.html#hero" class="nav-logo">SRR<span>.</span></a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#skills">Skills</a></li>
+    <li><a href="index.html#experience">Experience</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#education">Education</a></li>
+    <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─── PROJECT HERO (back-bar moved inside so glow covers both) ─── -->
+<section class="proj-hero">
+  <div class="proj-hero-glow"></div>
+  <div class="proj-hero-glow2"></div>
+
+  <div class="back-bar">
+    <div class="container">
+      <a href="index.html#projects" class="back-btn reveal">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to Projects
+      </a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="proj-category reveal">
+      <span class="dot"></span>
+      Python · Power BI · Business Intelligence
+    </div>
+    <h1 class="proj-title reveal">Retail Business<br><span class="em">Performance Dashboard</span></h1>
+    <p class="proj-tagline reveal">
+      An end-to-end analytics project combining Python and Power BI to analyze retail and warehouse sales performance, product performance, supplier contribution, and beverage category trends — transforming raw sales data into actionable business insights.
+    </p>
+    <div class="proj-meta-row reveal">
+      <span class="proj-meta-chip">🐍 Python</span>
+      <span class="proj-meta-chip">🛠️ Power BI</span>
+      <span class="proj-meta-chip">📊 Pandas · NumPy</span>
+      <span class="proj-meta-chip">📈 Matplotlib · Seaborn</span>
+    </div>
+    <!-- <div class="proj-actions reveal">
+      <a href="https://github.com/soumyarout24/retail-sales-analysis-powerbi-python" target="_blank" rel="noopener" class="btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://github.com/soumyarout24/retail-sales-analysis-powerbi-python" target="_blank" rel="noopener" class="btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download Files
+      </a>
+    </div> -->
+  </div>
+</section>
+
+<section class="img-section">
+  <div class="container">
+    <div class="proj-img-wrap reveal">
+
+      <!-- window chrome -->
+      <div class="proj-img-bar">
+        <div class="proj-img-dot red"></div>
+        <div class="proj-img-dot yellow"></div>
+        <div class="proj-img-dot green"></div>
+
+        <span class="proj-img-bar-label">
+          Retail Business Performance Dashboard · Power BI + Python
+        </span>
+      </div>
+
+      <!-- VIDEO -->
+      <div class="proj-video-box">
+
+        <video
+          class="proj-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback">
+
+          <source src="Asset/Project/video/project7_new_aug2026.mp4" type="video/mp4">
+
+        </video>
+
+      </div>
+
+    </div>
+
+    <!--<p class="proj-img-caption">
+      📊 Retail Business Performance Dashboard — Power BI + Python
+    </p>-->
+
+  </div>
+</section>
+
+<!-- ─── OVERVIEW ─── -->
+<section class="overview-section">
+  <div class="container">
+    <div class="overview-grid">
+      <div class="overview-body">
+        <div class="section-label reveal">Overview</div>
+        <h2 class="section-title reveal">Project Overview &<br>Problem Statement</h2>
+        <div class="reveal">
+          <p>The <strong>Retail Business Performance Dashboard</strong> is an interactive business intelligence project built using <strong>Python</strong> for data analysis and <strong>Power BI</strong> for visualization. It analyzes retail and warehouse sales performance, product performance, supplier contribution, and beverage category trends to support strategic decision-making.</p>
+          <p>Retail organizations generate large volumes of sales data across multiple products, suppliers, and categories — without proper analysis this makes it difficult to identify top-selling products, understand supplier contribution to revenue, monitor monthly sales performance, compare retail and warehouse operations, and understand category-wise sales contribution.</p>
+          <p>The objective was to build a centralized reporting solution: cleaning and validating raw sales data in Python, running exploratory data analysis to surface trends and outliers, and then developing an interactive Power BI dashboard that lets stakeholders monitor sales trends, evaluate suppliers, and compare channels in one place.</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="info-card">
+          <div class="info-card-header">Project Details</div>
+          <div class="info-card-body">
+            <div class="info-row">
+              <span class="info-key">Category</span>
+              <span class="info-val"><span class="tag">BI Dashboard</span></span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Tools</span>
+              <span class="info-val">Python + Power BI</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Data Prep</span>
+              <span class="info-val">Pandas · NumPy · Excel</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Domain</span>
+              <span class="info-val"><span class="tag amber">Retail & Warehouse</span></span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Filters</span>
+              <span class="info-val">Month · Product · Category · Supplier</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Source Files</span>
+              <span class="info-val">
+                <a href="https://github.com/soumyarout24/retail-sales-analysis-powerbi-python" target="_blank" rel="noopener"
+                   style="color:var(--accent);text-decoration:none;font-size:0.78rem;">GitHub →</a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── KPIs ─── -->
+<section class="kpi-section">
+  <div class="container">
+    <div class="section-label reveal">Metrics</div>
+    <h2 class="section-title reveal">Key Performance Indicators</h2>
+    <div class="kpi-big-grid">
+      <div class="kpi-big-card reveal"><div class="kpi-big-icon">💰</div><div class="kpi-big-value kpi-big-value--text">Retail Sales</div><div class="kpi-big-label">Measures overall retail revenue generated</div></div>
+      <div class="kpi-big-card reveal"><div class="kpi-big-icon">🏭</div><div class="kpi-big-value kpi-big-value--text">Warehouse Sales</div><div class="kpi-big-label">Measures total warehouse sales performance</div></div>
+      <div class="kpi-big-card reveal"><div class="kpi-big-icon">📦</div><div class="kpi-big-value kpi-big-value--text">Total Products</div><div class="kpi-big-label">Displays the number of unique products available</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PYTHON ANALYSIS ─── -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-label reveal">Phase 1</div>
+    <h2 class="section-title reveal">Python Analysis Performed</h2>
+    <div class="features-grid">
+      <div class="feature-item reveal"><div class="feature-icon">🧹</div><div><div class="feature-title">Data Cleaning & Validation</div><div class="feature-desc">Data loading, inspection, missing value analysis, and duplicate record detection using Pandas and NumPy.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">📈</div><div><div class="feature-title">Monthly Sales Trend Analysis</div><div class="feature-desc">Exploratory analysis of monthly retail sales to identify growth, decline, and seasonal patterns.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">🏆</div><div><div class="feature-title">Top Products & Suppliers Analysis</div><div class="feature-desc">Identifying best-performing products and suppliers by sales contribution using Matplotlib and Seaborn.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">📊</div><div><div class="feature-title">Retail vs Warehouse Comparison</div><div class="feature-desc">Comparing retail and warehouse sales channels to evaluate operational performance.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">🔗</div><div><div class="feature-title">Correlation Analysis</div><div class="feature-desc">Examining relationships between sales metrics to surface patterns that inform business decisions.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">🎯</div><div><div class="feature-title">Distribution & Outlier Detection</div><div class="feature-desc">Analyzing retail sales distribution and flagging outliers ahead of dashboard modeling.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── INSIGHTS ─── -->
+<section class="insights-section">
+  <div class="container">
+    <div class="section-label reveal">Analysis</div>
+    <h2 class="section-title reveal">Key Insights</h2>
+    <div class="insights-grid">
+      <div class="insight-card reveal"><div class="insight-num">01</div><div class="insight-title">Clear Top-Performing Products</div><div class="insight-desc">A distinct set of products consistently contributes the highest share of retail sales, guiding priority for inventory planning.</div></div>
+      <div class="insight-card reveal"><div class="insight-num">02</div><div class="insight-title">Supplier Contribution Is Uneven</div><div class="insight-desc">A small group of top-performing suppliers drives a disproportionate share of revenue, highlighting key business partners to strengthen.</div></div>
+      <div class="insight-card reveal"><div class="insight-num">03</div><div class="insight-title">Seasonal Monthly Trends</div><div class="insight-desc">Monthly sales trend analysis reveals peak and low-performing periods, useful for planning promotional activity.</div></div>
+      <div class="insight-card reveal"><div class="insight-num">04</div><div class="insight-title">Retail Outpaces Warehouse in Key Periods</div><div class="insight-desc">Comparing retail and warehouse channels shows shifting performance across periods, pointing to opportunities in warehouse planning.</div></div>
+      <div class="insight-card reveal"><div class="insight-num">05</div><div class="insight-title">Category Contribution Is Concentrated</div><div class="insight-desc">A handful of beverage categories account for the bulk of retail sales, reflecting concentrated customer purchasing behavior.</div></div>
+      <div class="insight-card reveal"><div class="insight-num">06</div><div class="insight-title">Outliers Flag Data & Demand Anomalies</div><div class="insight-desc">Outlier detection in the Python phase surfaced unusual sales spikes worth investigating for data quality or emerging demand.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TOOLS ─── -->
+<section class="tools-section">
+  <div class="container">
+    <div class="section-label reveal">Stack</div>
+    <h2 class="section-title reveal">Tools & Technologies</h2>
+    <div class="tools-grid reveal">
+      <div class="tool-chip">🐍 Python</div>
+      <div class="tool-chip">🐼 Pandas</div>
+      <div class="tool-chip">🔢 NumPy</div>
+      <div class="tool-chip">📉 Matplotlib</div>
+      <div class="tool-chip">📊 Seaborn</div>
+      <div class="tool-chip">🛠️ Power BI</div>
+      <div class="tool-chip">🎛️ DAX Measures</div>
+      <div class="tool-chip">📗 Microsoft Excel</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES ─── -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-label reveal">Functionality</div>
+    <h2 class="section-title reveal">Key Features</h2>
+    <div class="features-grid">
+      <div class="feature-item reveal"><div class="feature-icon">🎛️</div><div><div class="feature-title">Interactive Power BI Dashboard</div><div class="feature-desc">Fully interactive report with dynamic filtering across all visuals for deep drill-down analysis.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">🔀</div><div><div class="feature-title">Dynamic Slicers</div><div class="feature-desc">Month, Product Name, Beverage Category, and Supplier slicers let users dynamically filter the entire dashboard.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">📈</div><div><div class="feature-title">Multiple Visualization Types</div><div class="feature-desc">Combines line, bar, donut, and clustered column charts to present the right visual for each business question.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">🎯</div><div><div class="feature-title">Clear KPI Tracking</div><div class="feature-desc">Prominent KPI cards display Total Retail Sales, Total Warehouse Sales, and Total Products at a glance.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">💡</div><div><div class="feature-title">Business-Focused Insights</div><div class="feature-desc">Every visual answers a specific business question around products, suppliers, categories, or channel performance.</div></div></div>
+      <div class="feature-item reveal"><div class="feature-icon">🔁</div><div><div class="feature-title">End-to-End Analytics Workflow</div><div class="feature-desc">A complete pipeline from Python-based cleaning and EDA through to Power BI reporting and decision support.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DATASET & FILES ─── -->
+<section class="dataset-section">
+  <div class="container">
+    <div class="dataset-grid">
+      <div>
+        <div class="section-label reveal">Data</div>
+        <h2 class="section-title reveal">Dataset Information</h2>
+        <div class="dataset-body reveal">
+          <p>The dataset encompasses retail and warehouse sales transaction records, cleaned and validated in <strong>Python</strong> before being loaded into Power BI for modeling and visualization.</p>
+          <p>Data fields included:</p>
+          <ul class="dataset-list">
+            <li>Product name and identifiers</li>
+            <li>Retail sales and warehouse sales metrics</li>
+            <li>Beverage category classification</li>
+            <li>Supplier details</li>
+            <li>Month-wise date fields for trend analysis</li>
+            <li>Item type and product performance data</li>
+          </ul>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="file-card">
+          <div class="file-card-header">📁 Project Files — via GitHub</div>
+          <div class="file-item">
+            <div class="file-item-left"><div class="file-icon">📊</div><div class="file-name-wrap"><div class="file-name">Retail_Performance_Dashboard.pbix</div><div class="file-size">Power BI Report File</div></div></div>
+            <a href="https://github.com/soumyarout24/retail-sales-analysis-powerbi-python" target="_blank" rel="noopener" class="file-download"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>GitHub</a>
+          </div>
+          <div class="file-item">
+            <div class="file-item-left"><div class="file-icon">🐍</div><div class="file-name-wrap"><div class="file-name">Retail_Sales_EDA.ipynb</div><div class="file-size">Python Analysis Notebook</div></div></div>
+            <a href="https://github.com/soumyarout24/retail-sales-analysis-powerbi-python" target="_blank" rel="noopener" class="file-download"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>GitHub</a>
+          </div>
+          <div class="file-item">
+            <div class="file-item-left"><div class="file-icon">📗</div><div><div class="file-name">Retail_Warehouse_Sales.csv</div><div class="file-size">Raw Sales Dataset</div></div></div>
+            <a href="https://github.com/soumyarout24/retail-sales-analysis-powerbi-python" target="_blank" rel="noopener" class="file-download"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>GitHub</a>
+          </div>
+          <div class="file-item">
+            <div class="file-item-left"><div class="file-icon">📄</div><div class="file-name-wrap"><div class="file-name">README.md</div><div class="file-size">Project Documentation</div></div></div>
+            <a href="https://github.com/soumyarout24/retail-sales-analysis-powerbi-python" target="_blank" rel="noopener" class="file-download"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>GitHub</a>
+          </div>
+        </div>
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--muted);margin-top:10px;letter-spacing:0.04em;">All files hosted on GitHub — click any row to download.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONCLUSION ─── -->
+<section class="conclusion-section">
+  <div class="container">
+    <div class="section-label reveal">Conclusion</div>
+    <h2 class="section-title reveal">Takeaway</h2>
+    <div class="conclusion-inner reveal">
+      <p>This project transforms <strong>raw retail sales data</strong> into a comprehensive Business Intelligence solution. By combining Python-based analysis with Power BI visualizations, the dashboard gives stakeholders a centralized platform to monitor sales performance, evaluate supplier contribution, analyze product demand, and make informed business decisions — from inventory planning and supplier relationships to warehouse optimization and category expansion.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT CTA ─── -->
+<section class="contact-cta">
+  <div class="container">
+    <div class="contact-cta-inner">
+      <div class="contact-cta-text reveal">
+        <h3>Interested in<br>collaborating <span class="em">?</span></h3>
+        <p>Feel free to reach out for feedback, collaboration, or any data analytics opportunities.</p>
+      </div>
+      <div class="reveal" style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="mailto:rout06738@gmail.com" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v10H2V3zm0 0l6 5 6-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+          rout06738@gmail.com
+        </a>
+        <a href="https://github.com/soumyarout24" target="_blank" rel="noopener" class="btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          GitHub Profile
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER — exact from original index.html
+     ══════════════════════════════════════════ -->
+<footer>
+  <div class="footer-copy">© 2026 Soumya Ranjan Rout — Built for recruiters, by a data guy.</div>
+  <a href="#" class="footer-back">↑ Back to top</a>
+</footer>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>
